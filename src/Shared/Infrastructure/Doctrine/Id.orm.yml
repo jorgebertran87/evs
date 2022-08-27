@@ -1,0 +1,7 @@
+App\Shared\Domain\Id:
+  type: embeddable
+  id:
+    identifier:
+      column: id
+      type: string
+      length: 50

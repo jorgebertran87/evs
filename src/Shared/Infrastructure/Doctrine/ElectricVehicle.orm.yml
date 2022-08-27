@@ -1,0 +1,16 @@
+App\Shared\Domain\ElectricVehicle:
+  type: entity
+  table: electric_vehicles
+  embedded:
+    id:
+      class: Id
+      columnPrefix: false
+  oneToMany:
+    groups:
+      targetEntity: Group
+      cascade: [ "persist", "remove" ]
+      mappedBy: electricVehicle
+  fields:
+    seats:
+      type: integer
+      unsigned: true

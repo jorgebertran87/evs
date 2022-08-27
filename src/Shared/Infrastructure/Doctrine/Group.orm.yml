@@ -1,0 +1,20 @@
+App\Shared\Domain\Group:
+  type: entity
+  table: groups
+  embedded:
+    id:
+      class: Id
+      columnPrefix: false
+  fields:
+    people:
+      type: integer
+      unsigned: true
+  manyToOne:
+    electricVehicle:
+      targetEntity: ElectricVehicle
+      inversedBy: groups
+      cascade: [ "persist", "merge" ]
+      joinColumn:
+        name: electric_vehicle_id
+        referencedColumnName: id
+        onDelete: SET NULL

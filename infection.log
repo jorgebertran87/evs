@@ -1,0 +1,1280 @@
+Escaped mutants:
+================
+
+1) /app/src/DropOffGroup/Domain/GroupIsNotLoadedException.php:14    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is not loaded';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(': ' . self::MESSAGE . (string) $id);
+     }
+ }
+
+
+2) /app/src/DropOffGroup/Domain/GroupIsNotLoadedException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is not loaded';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(': ' . (string) $id);
+     }
+ }
+
+
+3) /app/src/DropOffGroup/Domain/GroupIsNotLoadedException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is not loaded';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . (string) $id);
+     }
+ }
+
+
+4) /app/src/DropOffGroup/Domain/GroupIsNotLoadedException.php:14    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is not loaded';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . ': ' . $id);
+     }
+ }
+
+
+5) /app/src/DropOffGroup/Domain/GroupIsNotLoadedException.php:14    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is not loaded';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . (string) $id . ': ');
+     }
+ }
+
+
+6) /app/src/DropOffGroup/Domain/GroupIsNotLoadedException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is not loaded';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . ': ');
+     }
+ }
+
+
+7) /app/src/DropOffGroup/Infrastructure/GroupsRepository.php:20    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     }
+     public function findOneById(Id $id) : Group|null
+     {
+-        return $this->findOneBy(['id.identifier' => (string) $id]);
++        return $this->findOneBy(['id.identifier' => $id]);
+     }
+     public function dropOff(Group $group) : void
+     {
+
+
+8) /app/src/DropOffGroup/Infrastructure/GroupsRepository.php:20    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+     }
+     public function findOneById(Id $id) : Group|null
+     {
+-        return $this->findOneBy(['id.identifier' => (string) $id]);
++        return $this->findOneBy([]);
+     }
+     public function dropOff(Group $group) : void
+     {
+
+
+9) /app/src/LoadElectricVehicles/Application/ElectricVehiclesDataValidator.php:52    [M] GreaterThanOrEqualTo
+
+--- Original
++++ New
+@@ @@
+     }
+     private function areSeatsInValidRange(int $seats) : bool
+     {
+-        return $seats >= 1 && $seats <= 6;
++        return $seats > 1 && $seats <= 6;
+     }
+ }
+
+
+10) /app/src/LoadElectricVehicles/Application/ElectricVehiclesDataValidator.php:52    [M] LessThanOrEqualTo
+
+--- Original
++++ New
+@@ @@
+     }
+     private function areSeatsInValidRange(int $seats) : bool
+     {
+-        return $seats >= 1 && $seats <= 6;
++        return $seats >= 1 && $seats < 6;
+     }
+ }
+
+
+11) /app/src/LoadElectricVehicles/Application/ElectricVehiclesDataValidator.php:52    [M] LogicalAnd
+
+--- Original
++++ New
+@@ @@
+     }
+     private function areSeatsInValidRange(int $seats) : bool
+     {
+-        return $seats >= 1 && $seats <= 6;
++        return $seats >= 1 || $seats <= 6;
+     }
+ }
+
+
+12) /app/src/LoadElectricVehicles/Application/LoadElectricVehiclesCommandHandler.php:28    [M] MethodCallRemoval
+
+--- Original
++++ New
+@@ @@
+     public function handle(LoadElectricVehiclesCommand $loadElectricVehiclesCommand) : array
+     {
+         $this->electricVehicleDataValidator->validate($loadElectricVehiclesCommand->electricVehiclesData());
+-        $this->electricVehiclesRepository->unloadAll();
++        
+         foreach ($loadElectricVehiclesCommand->electricVehiclesData() as $electricVehicleData) {
+             $electricVehicle = new ElectricVehicle(new Id($electricVehicleData->id), $electricVehicleData->seats);
+             $electricVehicle->load();
+
+
+13) /app/src/LoadElectricVehicles/Application/LoadElectricVehiclesCommandHandler.php:39    [M] Foreach_
+
+--- Original
++++ New
+@@ @@
+         /** @var ElectricVehicle[] $electricVehicles */
+         $electricVehicles = DomainEventsSubscriber::handle($this->dependenciesInjector);
+         $response = [];
+-        foreach ($electricVehicles as $electricVehicle) {
++        foreach (array() as $electricVehicle) {
+             $response[] = $electricVehicle->serialize();
+         }
+         return $response;
+     }
+ }
+
+
+14) /app/src/LoadElectricVehicles/Application/LoadElectricVehiclesCommandHandler.php:43    [M] ArrayOneItem
+
+--- Original
++++ New
+@@ @@
+         foreach ($electricVehicles as $electricVehicle) {
+             $response[] = $electricVehicle->serialize();
+         }
+-        return $response;
++        return count($response) > 1 ? array_slice($response, 0, 1, true) : $response;
+     }
+ }
+
+
+15) /app/src/LocateGroup/Domain/GroupIsWaitingToBeAssignedException.php:14    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is waiting to be assigned';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(': ' . self::MESSAGE . (string) $id);
+     }
+ }
+
+
+16) /app/src/LocateGroup/Domain/GroupIsWaitingToBeAssignedException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is waiting to be assigned';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(': ' . (string) $id);
+     }
+ }
+
+
+17) /app/src/LocateGroup/Domain/GroupIsWaitingToBeAssignedException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is waiting to be assigned';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . (string) $id);
+     }
+ }
+
+
+18) /app/src/LocateGroup/Domain/GroupIsWaitingToBeAssignedException.php:14    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is waiting to be assigned';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . ': ' . $id);
+     }
+ }
+
+
+19) /app/src/LocateGroup/Domain/GroupIsWaitingToBeAssignedException.php:14    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is waiting to be assigned';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . (string) $id . ': ');
+     }
+ }
+
+
+20) /app/src/LocateGroup/Domain/GroupIsWaitingToBeAssignedException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group is waiting to be assigned';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . ': ');
+     }
+ }
+
+
+21) /app/src/LocateGroup/Domain/GroupNotFoundException.php:14    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group cannot be found';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(': ' . self::MESSAGE . (string) $id);
+     }
+ }
+
+
+22) /app/src/LocateGroup/Domain/GroupNotFoundException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group cannot be found';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(': ' . (string) $id);
+     }
+ }
+
+
+23) /app/src/LocateGroup/Domain/GroupNotFoundException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group cannot be found';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . (string) $id);
+     }
+ }
+
+
+24) /app/src/LocateGroup/Domain/GroupNotFoundException.php:14    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group cannot be found';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . ': ' . $id);
+     }
+ }
+
+
+25) /app/src/LocateGroup/Domain/GroupNotFoundException.php:14    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group cannot be found';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . (string) $id . ': ');
+     }
+ }
+
+
+26) /app/src/LocateGroup/Domain/GroupNotFoundException.php:14    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This group cannot be found';
+     public static function createFromId(Id $id) : self
+     {
+-        return new self(self::MESSAGE . ': ' . (string) $id);
++        return new self(self::MESSAGE . ': ');
+     }
+ }
+
+
+27) /app/src/LocateGroup/Infrastructure/GroupsRepository.php:21    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     }
+     public function findOneById(Id $id) : Group|null
+     {
+-        return $this->findOneBy(['id.identifier' => (string) $id]);
++        return $this->findOneBy(['id.identifier' => $id]);
+     }
+ }
+
+
+28) /app/src/PerformJourney/Application/GroupDataValidator.php:30    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+     private function validateDataIdAndPeopleFields(mixed $groupData) : void
+     {
+         if (!is_object($groupData)) {
+-            throw NotValidGroupDataException::create();
++            NotValidGroupDataException::create();
+         }
+         try {
+             $this->idDataValidator->validate($groupData);
+
+
+29) /app/src/PerformJourney/Application/GroupDataValidator.php:47    [M] GreaterThanOrEqualTo
+
+--- Original
++++ New
+@@ @@
+     }
+     private function arePeopleInValidRange(int $people) : bool
+     {
+-        return $people >= 1 && $people <= 6;
++        return $people > 1 && $people <= 6;
+     }
+ }
+
+
+30) /app/src/PerformJourney/Application/GroupDataValidator.php:47    [M] LessThanOrEqualTo
+
+--- Original
++++ New
+@@ @@
+     }
+     private function arePeopleInValidRange(int $people) : bool
+     {
+-        return $people >= 1 && $people <= 6;
++        return $people >= 1 && $people < 6;
+     }
+ }
+
+
+31) /app/src/PerformJourney/Application/GroupDataValidator.php:47    [M] LogicalAnd
+
+--- Original
++++ New
+@@ @@
+     }
+     private function arePeopleInValidRange(int $people) : bool
+     {
+-        return $people >= 1 && $people <= 6;
++        return $people >= 1 || $people <= 6;
+     }
+ }
+
+
+32) /app/src/PerformJourney/Application/PerformJourneyCommandHandler.php:29    [M] IncrementInteger
+
+--- Original
++++ New
+@@ @@
+         $group = new Group(new Id($performJourneyCommand->groupData()->id), $performJourneyCommand->groupData()->people);
+         $group->performJourney();
+         /** @var ElectricVehicle|null $electricVehicle */
+-        $electricVehicle = DomainEventsSubscriber::handle($this->dependenciesInjector)[0];
++        $electricVehicle = DomainEventsSubscriber::handle($this->dependenciesInjector)[1];
+         return $electricVehicle?->serialize();
+     }
+ }
+
+
+33) /app/src/PerformJourney/Domain/GroupWillBeAssignedToElectricVehicleHandler.php:20    [M] MethodCallRemoval
+
+--- Original
++++ New
+@@ @@
+      */
+     public function handle(DomainEvent $domainEvent) : mixed
+     {
+-        $this->electricVehiclesRepository->save($domainEvent->electricVehicle());
++        
+         return null;
+     }
+ }
+
+
+34) /app/src/PerformJourney/Domain/GroupWillBeRegisteredHandler.php:20    [M] MethodCallRemoval
+
+--- Original
++++ New
+@@ @@
+      */
+     public function handle(DomainEvent $domainEvent) : mixed
+     {
+-        $this->groupsRepository->save($domainEvent->group());
++        
+         return null;
+     }
+ }
+
+
+35) /app/src/PerformJourney/Domain/JourneyWillBePerformedHandler.php:24    [M] Foreach_
+
+--- Original
++++ New
+@@ @@
+         $electricVehicles = $this->electricVehiclesRepository->getAll();
+         foreach ($electricVehicles as $electricVehicle) {
+             $peopleInElectricVehicle = 0;
+-            foreach ($electricVehicle->groups() as $group) {
++            foreach (array() as $group) {
+                 $peopleInElectricVehicle += $group->people();
+             }
+             $pendingSeats = $electricVehicle->seats() - $peopleInElectricVehicle;
+
+
+36) /app/src/PerformJourney/Domain/JourneyWillBePerformedHandler.php:28    [M] Minus
+
+--- Original
++++ New
+@@ @@
+             foreach ($electricVehicle->groups() as $group) {
+                 $peopleInElectricVehicle += $group->people();
+             }
+-            $pendingSeats = $electricVehicle->seats() - $peopleInElectricVehicle;
++            $pendingSeats = $electricVehicle->seats() + $peopleInElectricVehicle;
+             if ($pendingSeats >= $domainEvent->group()->people()) {
+                 $electricVehicle->assignGroup($domainEvent->group());
+                 return $domainEvent->group();
+
+
+37) /app/src/Shared/Domain/DomainEventsSubscriber.php:31    [M] ArrayOneItem
+
+--- Original
++++ New
+@@ @@
+             $subscribedEventHandler = self::handlerFromDomainEvent($subscribedEvent, $dependenciesInjector);
+             $results[] = $subscribedEventHandler->handle($subscribedEvent);
+         }
+-        return $results;
++        return count($results) > 1 ? array_slice($results, 0, 1, true) : $results;
+     }
+     private static function handlerFromDomainEvent(DomainEvent $domainEvent, DependenciesInjector $dependenciesInjector) : DomainEventHandler
+     {
+
+
+38) /app/src/Shared/Domain/DomainEventsSubscriber.php:45    [M] TrueValue
+
+--- Original
++++ New
+@@ @@
+     }
+     public static function stop() : void
+     {
+-        self::$isStopped = true;
++        self::$isStopped = false;
+     }
+     public static function init() : void
+     {
+
+
+39) /app/src/Shared/Domain/DomainEventsSubscriber.php:50    [M] FalseValue
+
+--- Original
++++ New
+@@ @@
+     }
+     public static function init() : void
+     {
+-        self::$isStopped = false;
++        self::$isStopped = true;
+     }
+ }
+
+
+40) /app/src/Shared/Domain/ElectricVehicle.php:50    [M] Foreach_
+
+--- Original
++++ New
+@@ @@
+     public function serialize() : array
+     {
+         $serializedGroups = [];
+-        foreach ($this->groups as $group) {
++        foreach (array() as $group) {
+             $serializedGroups[] = $group->serialize();
+         }
+         return ['id' => (int) (string) $this->id, 'seats' => $this->seats, 'groups' => $serializedGroups];
+     }
+ }
+
+
+41) /app/src/Shared/Domain/ElectricVehicle.php:54    [M] CastInt
+
+--- Original
++++ New
+@@ @@
+         foreach ($this->groups as $group) {
+             $serializedGroups[] = $group->serialize();
+         }
+-        return ['id' => (int) (string) $this->id, 'seats' => $this->seats, 'groups' => $serializedGroups];
++        return ['id' => (string) $this->id, 'seats' => $this->seats, 'groups' => $serializedGroups];
+     }
+ }
+
+
+42) /app/src/Shared/Domain/ElectricVehicle.php:55    [M] ArrayItem
+
+--- Original
++++ New
+@@ @@
+         foreach ($this->groups as $group) {
+             $serializedGroups[] = $group->serialize();
+         }
+-        return ['id' => (int) (string) $this->id, 'seats' => $this->seats, 'groups' => $serializedGroups];
++        return ['id' => (int) (string) $this->id, 'seats' > $this->seats, 'groups' => $serializedGroups];
+     }
+ }
+
+
+43) /app/src/Shared/Domain/Group.php:60    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+     }
+     public function serialize() : array
+     {
+-        return ['id' => (int) (string) $this->id, 'people' => $this->people];
++        return ['people' => $this->people];
+     }
+ }
+
+
+44) /app/src/Shared/Domain/Group.php:61    [M] CastInt
+
+--- Original
++++ New
+@@ @@
+     }
+     public function serialize() : array
+     {
+-        return ['id' => (int) (string) $this->id, 'people' => $this->people];
++        return ['id' => (string) $this->id, 'people' => $this->people];
+     }
+ }
+
+
+45) /app/src/Shared/Domain/Group.php:62    [M] ArrayItem
+
+--- Original
++++ New
+@@ @@
+     }
+     public function serialize() : array
+     {
+-        return ['id' => (int) (string) $this->id, 'people' => $this->people];
++        return ['id' => (int) (string) $this->id, 'people' > $this->people];
+     }
+ }
+
+
+Timed Out mutants:
+==================
+
+Skipped mutants:
+================
+
+Not Covered mutants:
+====================
+
+1) /app/src/DropOffGroup/Infrastructure/DropOffGroupController.php:18    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class DropOffGroupController extends BaseController
+ {
+-    #[Route('/dropoff', name: 'dropoff_group', methods: ['POST'])]
++    #[Route('/dropoff', name: 'dropoff_group', methods: [])]
+     public function dropOffGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         $message = null;
+
+
+2) /app/src/DropOffGroup/Infrastructure/DropOffGroupController.php:18    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class DropOffGroupController extends BaseController
+ {
+-    #[Route('/dropoff', name: 'dropoff_group', methods: ['POST'])]
+-    public function dropOffGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
++    protected function dropOffGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         $message = null;
+         try {
+
+
+3) /app/src/DropOffGroup/Infrastructure/DropOffGroupController.php:27    [M] FunctionCallRemoval
+
+--- Original
++++ New
+@@ @@
+     {
+         $message = null;
+         try {
+-            $checkContentType($request->getContentType());
++            
+             $idData = json_decode((string) $request->getContent());
+             $dropOffGroupCommand = new DropOffGroupCommand($idData);
+             $message = $messageBus->handle($dropOffGroupCommand);
+
+
+4) /app/src/DropOffGroup/Infrastructure/DropOffGroupController.php:28    [M] CastString
+
+--- Original
++++ New
+@@ @@
+         $message = null;
+         try {
+             $checkContentType($request->getContentType());
+-            $idData = json_decode((string) $request->getContent());
++            $idData = json_decode($request->getContent());
+             $dropOffGroupCommand = new DropOffGroupCommand($idData);
+             $message = $messageBus->handle($dropOffGroupCommand);
+         } catch (GroupIsNotLoadedException) {
+
+
+5) /app/src/LoadElectricVehicles/Application/ElectricVehiclesDataValidator.php:35    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+     {
+         foreach ($electricVehiclesData as $electricVehicleData) {
+             if (!is_object($electricVehicleData)) {
+-                throw NotValidElectricVehiclesDataException::create();
++                NotValidElectricVehiclesDataException::create();
+             }
+             try {
+                 $this->idDataValidator->validate($electricVehicleData);
+
+
+6) /app/src/LoadElectricVehicles/Infrastructure/LoadElectricVehiclesController.php:17    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class LoadElectricVehiclesController extends BaseController
+ {
+-    #[Route('/evs', name: 'load_electric_vehicles', methods: ['PUT'])]
++    #[Route('/evs', name: 'load_electric_vehicles', methods: [])]
+     public function loadElectricVehiclesAction(MessageBus $messageBus, CheckContentType $checkContentType, Request $request) : JsonResponse
+     {
+         $message = null;
+
+
+7) /app/src/LoadElectricVehicles/Infrastructure/LoadElectricVehiclesController.php:17    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class LoadElectricVehiclesController extends BaseController
+ {
+-    #[Route('/evs', name: 'load_electric_vehicles', methods: ['PUT'])]
+-    public function loadElectricVehiclesAction(MessageBus $messageBus, CheckContentType $checkContentType, Request $request) : JsonResponse
++    protected function loadElectricVehiclesAction(MessageBus $messageBus, CheckContentType $checkContentType, Request $request) : JsonResponse
+     {
+         $message = null;
+         try {
+
+
+8) /app/src/LoadElectricVehicles/Infrastructure/LoadElectricVehiclesController.php:25    [M] FunctionCallRemoval
+
+--- Original
++++ New
+@@ @@
+     {
+         $message = null;
+         try {
+-            $checkContentType($request->getContentType());
++            
+             $electricVehiclesData = json_decode((string) $request->getContent());
+             $loadElectricVehiclesCommand = new LoadElectricVehiclesCommand($electricVehiclesData);
+             $message = $messageBus->handle($loadElectricVehiclesCommand);
+
+
+9) /app/src/LoadElectricVehicles/Infrastructure/LoadElectricVehiclesController.php:26    [M] CastString
+
+--- Original
++++ New
+@@ @@
+         $message = null;
+         try {
+             $checkContentType($request->getContentType());
+-            $electricVehiclesData = json_decode((string) $request->getContent());
++            $electricVehiclesData = json_decode($request->getContent());
+             $loadElectricVehiclesCommand = new LoadElectricVehiclesCommand($electricVehiclesData);
+             $message = $messageBus->handle($loadElectricVehiclesCommand);
+         } catch (Exception) {
+
+
+10) /app/src/LocateGroup/Infrastructure/LocateGroupController.php:19    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class LocateGroupController extends BaseController
+ {
+-    #[Route('/locate', name: 'locate_group', methods: ['POST'])]
++    #[Route('/locate', name: 'locate_group', methods: [])]
+     public function LocateGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         try {
+
+
+11) /app/src/LocateGroup/Infrastructure/LocateGroupController.php:19    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class LocateGroupController extends BaseController
+ {
+-    #[Route('/locate', name: 'locate_group', methods: ['POST'])]
+-    public function LocateGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
++    protected function LocateGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         try {
+             $checkContentType($request->getContentType());
+
+
+12) /app/src/LocateGroup/Infrastructure/LocateGroupController.php:23    [M] FunctionCallRemoval
+
+--- Original
++++ New
+@@ @@
+     public function LocateGroupAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         try {
+-            $checkContentType($request->getContentType());
++            
+             $idData = json_decode((string) $request->getContent());
+             $locateGroupQuery = new LocateGroupQuery($idData);
+             return new JsonResponse($messageBus->handle($locateGroupQuery), Response::HTTP_OK);
+
+
+13) /app/src/LocateGroup/Infrastructure/LocateGroupController.php:24    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     {
+         try {
+             $checkContentType($request->getContentType());
+-            $idData = json_decode((string) $request->getContent());
++            $idData = json_decode($request->getContent());
+             $locateGroupQuery = new LocateGroupQuery($idData);
+             return new JsonResponse($messageBus->handle($locateGroupQuery), Response::HTTP_OK);
+         } catch (GroupNotFoundException) {
+
+
+14) /app/src/PerformJourney/Domain/JourneyWillBePerformedHandler.php:25    [M] Assignment
+
+--- Original
++++ New
+@@ @@
+         foreach ($electricVehicles as $electricVehicle) {
+             $peopleInElectricVehicle = 0;
+             foreach ($electricVehicle->groups() as $group) {
+-                $peopleInElectricVehicle += $group->people();
++                $peopleInElectricVehicle = $group->people();
+             }
+             $pendingSeats = $electricVehicle->seats() - $peopleInElectricVehicle;
+             if ($pendingSeats >= $domainEvent->group()->people()) {
+
+
+15) /app/src/PerformJourney/Domain/JourneyWillBePerformedHandler.php:25    [M] PlusEqual
+
+--- Original
++++ New
+@@ @@
+         foreach ($electricVehicles as $electricVehicle) {
+             $peopleInElectricVehicle = 0;
+             foreach ($electricVehicle->groups() as $group) {
+-                $peopleInElectricVehicle += $group->people();
++                $peopleInElectricVehicle -= $group->people();
+             }
+             $pendingSeats = $electricVehicle->seats() - $peopleInElectricVehicle;
+             if ($pendingSeats >= $domainEvent->group()->people()) {
+
+
+16) /app/src/PerformJourney/Infrastructure/GroupsRepository.php:14    [M] MethodCallRemoval
+
+--- Original
++++ New
+@@ @@
+ {
+     public function __construct(ManagerRegistry $registry)
+     {
+-        parent::__construct($registry, Group::class);
++        
+     }
+     public function save(Group $group) : void
+     {
+
+
+17) /app/src/PerformJourney/Infrastructure/GroupsRepository.php:19    [M] MethodCallRemoval
+
+--- Original
++++ New
+@@ @@
+     }
+     public function save(Group $group) : void
+     {
+-        $this->_em->persist($group);
++        
+         $this->_em->flush();
+     }
+ }
+
+
+18) /app/src/PerformJourney/Infrastructure/GroupsRepository.php:20    [M] MethodCallRemoval
+
+--- Original
++++ New
+@@ @@
+     public function save(Group $group) : void
+     {
+         $this->_em->persist($group);
+-        $this->_em->flush();
++        
+     }
+ }
+
+
+19) /app/src/PerformJourney/Infrastructure/PerformJourneyController.php:17    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class PerformJourneyController extends BaseController
+ {
+-    #[Route('/journey', name: 'perform_journey', methods: ['POST'])]
++    #[Route('/journey', name: 'perform_journey', methods: [])]
+     public function performJourneyAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         $message = null;
+
+
+20) /app/src/PerformJourney/Infrastructure/PerformJourneyController.php:17    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class PerformJourneyController extends BaseController
+ {
+-    #[Route('/journey', name: 'perform_journey', methods: ['POST'])]
+-    public function performJourneyAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
++    protected function performJourneyAction(MessageBus $messageBus, Request $request, CheckContentType $checkContentType) : JsonResponse
+     {
+         $message = null;
+         try {
+
+
+21) /app/src/PerformJourney/Infrastructure/PerformJourneyController.php:23    [M] FunctionCallRemoval
+
+--- Original
++++ New
+@@ @@
+     {
+         $message = null;
+         try {
+-            $checkContentType($request->getContentType());
++            
+             $groupData = json_decode((string) $request->getContent());
+             $performJourneyCommand = new PerformJourneyCommand($groupData);
+             $message = $messageBus->handle($performJourneyCommand);
+
+
+22) /app/src/PerformJourney/Infrastructure/PerformJourneyController.php:24    [M] CastString
+
+--- Original
++++ New
+@@ @@
+         $message = null;
+         try {
+             $checkContentType($request->getContentType());
+-            $groupData = json_decode((string) $request->getContent());
++            $groupData = json_decode($request->getContent());
+             $performJourneyCommand = new PerformJourneyCommand($groupData);
+             $message = $messageBus->handle($performJourneyCommand);
+         } catch (Exception) {
+
+
+23) /app/src/Shared/Application/MessageBus.php:13    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+     public function __construct(private DependenciesInjector $dependenciesInjector)
+     {
+     }
+-    public function handle(Command|Query $message) : mixed
++    protected function handle(Command|Query $message) : mixed
+     {
+         $messageClassHandler = $message::class . 'Handler';
+         $messageHandler = $this->dependenciesInjector->inject($messageClassHandler);
+
+
+24) /app/src/Shared/Application/MessageBus.php:15    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     }
+     public function handle(Command|Query $message) : mixed
+     {
+-        $messageClassHandler = $message::class . 'Handler';
++        $messageClassHandler = 'Handler' . $message::class;
+         $messageHandler = $this->dependenciesInjector->inject($messageClassHandler);
+         return $messageHandler->handle($message);
+     }
+ }
+
+
+25) /app/src/Shared/Application/MessageBus.php:15    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     }
+     public function handle(Command|Query $message) : mixed
+     {
+-        $messageClassHandler = $message::class . 'Handler';
++        $messageClassHandler = 'Handler';
+         $messageHandler = $this->dependenciesInjector->inject($messageClassHandler);
+         return $messageHandler->handle($message);
+     }
+ }
+
+
+26) /app/src/Shared/Application/MessageBus.php:15    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     }
+     public function handle(Command|Query $message) : mixed
+     {
+-        $messageClassHandler = $message::class . 'Handler';
++        $messageClassHandler = $message::class;
+         $messageHandler = $this->dependenciesInjector->inject($messageClassHandler);
+         return $messageHandler->handle($message);
+     }
+ }
+
+
+27) /app/src/Shared/Domain/Group.php:43    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+     {
+         DomainEventsSubscriber::subscribe(new GroupWillBeLocated($this));
+     }
+-    public function electricVehicle() : ElectricVehicle|null
++    protected function electricVehicle() : ElectricVehicle|null
+     {
+         return $this->electricVehicle;
+     }
+
+
+28) /app/src/Shared/Infrastructure/BaseController.php:11    [M] ProtectedVisibility
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\HttpFoundation\Response;
+ class BaseController extends AbstractController
+ {
+-    protected function badRequest() : JsonResponse
++    private function badRequest() : JsonResponse
+     {
+         return new JsonResponse(null, Response::HTTP_BAD_REQUEST);
+     }
+ }
+
+
+29) /app/src/Shared/Infrastructure/CheckContentType.php:10    [M] NotIdentical
+
+--- Original
++++ New
+@@ @@
+     private const VALID_CONTENT_TYPE = "json";
+     public function __invoke(string|null $contentType) : void
+     {
+-        if (is_null($contentType) || $contentType !== self::VALID_CONTENT_TYPE) {
++        if (is_null($contentType) || $contentType === self::VALID_CONTENT_TYPE) {
+             throw InvalidContentTypeException::createFromContentType((string) $contentType, self::VALID_CONTENT_TYPE);
+         }
+     }
+ }
+
+
+30) /app/src/Shared/Infrastructure/CheckContentType.php:10    [M] LogicalOr
+
+--- Original
++++ New
+@@ @@
+     private const VALID_CONTENT_TYPE = "json";
+     public function __invoke(string|null $contentType) : void
+     {
+-        if (is_null($contentType) || $contentType !== self::VALID_CONTENT_TYPE) {
++        if (is_null($contentType) && $contentType !== self::VALID_CONTENT_TYPE) {
+             throw InvalidContentTypeException::createFromContentType((string) $contentType, self::VALID_CONTENT_TYPE);
+         }
+     }
+ }
+
+
+31) /app/src/Shared/Infrastructure/CheckContentType.php:11    [M] CastString
+
+--- Original
++++ New
+@@ @@
+     public function __invoke(string|null $contentType) : void
+     {
+         if (is_null($contentType) || $contentType !== self::VALID_CONTENT_TYPE) {
+-            throw InvalidContentTypeException::createFromContentType((string) $contentType, self::VALID_CONTENT_TYPE);
++            throw InvalidContentTypeException::createFromContentType($contentType, self::VALID_CONTENT_TYPE);
+         }
+     }
+ }
+
+
+32) /app/src/Shared/Infrastructure/CheckContentType.php:11    [M] Throw_
+
+--- Original
++++ New
+@@ @@
+     public function __invoke(string|null $contentType) : void
+     {
+         if (is_null($contentType) || $contentType !== self::VALID_CONTENT_TYPE) {
+-            throw InvalidContentTypeException::createFromContentType((string) $contentType, self::VALID_CONTENT_TYPE);
++            InvalidContentTypeException::createFromContentType((string) $contentType, self::VALID_CONTENT_TYPE);
+         }
+     }
+ }
+
+
+33) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:11    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+ class InvalidContentTypeException extends Exception
+ {
+     private const MESSAGE = 'This content type [contentType] is not valid';
+-    public static function createFromContentType(string $contentType, string $validContenType) : self
++    protected static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+         return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
+     }
+ }
+
+
+34) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:13    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This content type [contentType] is not valid';
+     public static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+-        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
++        return new self(str_replace('[contentType]', $contentType, ': ' . self::MESSAGE . $validContenType));
+     }
+ }
+
+
+35) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:13    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This content type [contentType] is not valid';
+     public static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+-        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
++        return new self(str_replace('[contentType]', $contentType, ': ' . $validContenType));
+     }
+ }
+
+
+36) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:13    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This content type [contentType] is not valid';
+     public static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+-        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
++        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . $validContenType));
+     }
+ }
+
+
+37) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:13    [M] Concat
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This content type [contentType] is not valid';
+     public static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+-        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
++        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . $validContenType . ': '));
+     }
+ }
+
+
+38) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:13    [M] ConcatOperandRemoval
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This content type [contentType] is not valid';
+     public static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+-        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
++        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': '));
+     }
+ }
+
+
+39) /app/src/Shared/Infrastructure/InvalidContentTypeException.php:13    [M] UnwrapStrReplace
+
+--- Original
++++ New
+@@ @@
+     private const MESSAGE = 'This content type [contentType] is not valid';
+     public static function createFromContentType(string $contentType, string $validContenType) : self
+     {
+-        return new self(str_replace('[contentType]', $contentType, self::MESSAGE . ': ' . $validContenType));
++        return new self(self::MESSAGE . ': ' . $validContenType);
+     }
+ }
+
+
+40) /app/src/Shared/Infrastructure/StatusController.php:11    [M] ArrayItemRemoval
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class StatusController extends BaseController
+ {
+-    #[Route('/status', name: 'status', methods: ['GET'])]
++    #[Route('/status', name: 'status', methods: [])]
+     public function statusAction() : JsonResponse
+     {
+         return new JsonResponse(null, Response::HTTP_OK);
+     }
+ }
+
+
+41) /app/src/Shared/Infrastructure/StatusController.php:11    [M] PublicVisibility
+
+--- Original
++++ New
+@@ @@
+ use Symfony\Component\Routing\Annotation\Route;
+ class StatusController extends BaseController
+ {
+-    #[Route('/status', name: 'status', methods: ['GET'])]
+-    public function statusAction() : JsonResponse
++    protected function statusAction() : JsonResponse
+     {
+         return new JsonResponse(null, Response::HTTP_OK);
+     }
+ }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit executionOrder="random"
+         resolveDependencies="true"
+         backupGlobals="false"
+         bootstrap="tests/bootstrap.php"
+         strict="true"
+         verbose="true">
+    <testsuite name="PHPUnit Skeleton Generator">
+        <directory suffix="Test.php">tests</directory>
+    </testsuite>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+    <php>
+        <server name="KERNEL_CLASS" value="App\Kernel" />
+        <env name="APP_ENV" value="test" />
+        <env name="SYMFONY_ENV" value="test" />
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+    </php>
+</phpunit>
